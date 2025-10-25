@@ -1,0 +1,37 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    restart: unless-stopped
+    container_name: node-hostname-app
+    
+    # Health check to ensure the app is running
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    
+    # Add labels for better organization
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.node-hostname.rule=Host(`localhost`)"
+      - "traefik.http.services.node-hostname.loadbalancer.server.port=3000"
+
+  # Optional: Add a reverse proxy if needed
+  # nginx:
+  #   image: nginx:alpine
+  #   ports:
+  #     - "80:80"
+  #   volumes:
+  #     - ./nginx.conf:/etc/nginx/nginx.conf:ro
+  #   depends_on:
+  #     - app
+  #   restart: unless-stopped
