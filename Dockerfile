@@ -13,12 +13,14 @@ RUN npm ci --only=production
 # Copy the rest of the application code
 COPY . .
 
-# Create a non-root user to run the application
-RUN addgroup -g 1001 -S nodejs
-RUN adduser -S nodeuser -u 1001
+# Create a non-root user and group to run the application
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nodeuser -u 1001 -G nodejs
 
 # Change ownership of the app directory to nodeuser
 RUN chown -R nodeuser:nodejs /usr/src/app
+
+# Switch to non-root user
 USER nodeuser
 
 # Expose the port the app runs on
