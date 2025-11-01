@@ -1,5 +1,5 @@
-# Use the official Node.js 18 alpine image for a smaller footprint
-FROM node:18-alpine
+# Use the Node.js 25 alpine image for a smaller footprint
+FROM node:25-alpine
 
 # Set the working directory inside the container
 WORKDIR /usr/src/app
